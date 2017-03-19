@@ -22,7 +22,7 @@
 // MPL3115A2 I2C address is 0x60(96)
 #define Addr 0x60
 
-#define TOKEN "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"  // Put here your Ubidots TOKEN
+#define TOKEN "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  // Put here your Ubidots TOKEN
 
 
 
@@ -40,7 +40,7 @@ void setup()
     Particle.variable("i2cdevice", "MPL3115A2");
     Particle.variable("cTemp", cTemp);
     Particle.variable("Pressure", pressure);
-    Particle.variable("altitude", altitude);
+    //Particle.variable("altitude", altitude);
     //Particle.publish("Heatingwey", "null");
 
     // Initialise I2C communication
@@ -113,21 +113,62 @@ void loop()
     fTemp = cTemp * 1.8 + 32;
     
     
-    if (temp > 304) {
-        Particle.publish("%%%%%%%%%%%%", "itshot");
+    if (temp > 368) {                                                          // >23C
+        Particle.publish("Heatingwey", "23");
     }
     else
-    if (temp < 284) {
-        Particle.publish("%%%%%%%%%%%%", "itscold");
+    if ((temp > 352) && (temp <= 368)) {                                       // 22C
+        Particle.publish("Heatingwey", "22");
     }
     else
-    if ((temp >= 284) && (temp <= 293)) {
-        Particle.publish("%%%%%%%%%%%%", "pulse1");
+    if ((temp > 336) && (temp <= 352)) {                                       // 21C
+        Particle.publish("Heatingwey", "21");
     }
     else
-    if ((temp >= 294) && (temp <= 304)) {
-        Particle.publish("%%%%%%%%%%%%", "pulse2");
+    if ((temp > 320) && (temp <= 336)) {                                       // 20C
+        Particle.publish("Heatingwey", "20");
     }
+    else
+    if ((temp > 304) && (temp <= 320)) {                                       // 19C
+        Particle.publish("Heatingwey", "itshot");
+    }
+    else
+    if ((temp > 296) && (temp <= 304)) {                                       // >=18.5C <= 19C
+        Particle.publish("Heatingwey", "pulse2");
+    }
+    else
+    if ((temp >= 288) && (temp <= 296)) {                                      // >=18C <= 18.5C
+        Particle.publish("Heatingwey", "pulse1");
+    }
+    else
+    if ((temp > 272) && (temp <= 288)) {                                       // <17C
+        Particle.publish("Heatingwey", "itscold");
+    }
+    else
+    if ((temp > 256) && (temp <= 272)) {                                       // 16C
+        Particle.publish("Heatingwey", "16");
+    }
+    else
+    if ((temp > 240) && (temp <= 256)) {                                       // 15C
+        Particle.publish("Heatingwey", "15");
+    }
+    else
+    if ((temp > 224) && (temp <= 240)) {                                       // 14C
+        Particle.publish("Heatingwey", "14");
+    }
+    else
+    if ((temp > 208) && (temp <= 224)) {                                       // 13C
+        Particle.publish("Heatingwey", "13");
+    }
+    else
+    if ((temp > 192) && (temp <= 208)) {                                       // 12C
+        Particle.publish("Heatingwey", "12");
+    }
+    else
+    if ((temp > 176) && (temp <= 192)) {                                       // 11C
+        Particle.publish("Heatingwey", "11");
+    }
+    
 
     // Start I2C transmission
     Wire.beginTransmission(Addr);
