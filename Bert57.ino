@@ -25,7 +25,7 @@
 WidgetLCD lcd(V0);
 
 
-char auth[] = "your token here";
+char auth[] = "your blynk token goes in here";
 
 //BLYNK_WRITE(V17) {                      //time input
 //  TimeInputParam t(param);
@@ -43,7 +43,7 @@ char auth[] = "your token here";
   tStopMin2 = t.getStopMinute();
 }*/
 
-int constantOn = 0;
+int constantOn = 2;
 int heatOff = 0;
 int shot = 0;
 int heatVariable = 0;
@@ -61,9 +61,9 @@ int pumpPumpAdd = 300000;
 int tSlide1 = 10000;
 
 
-DailyTimer timer1(6, 0,  8, 0, EVERY_DAY);                                            // 06:00 to 08:00 optional callback function for random number generation, see below example
-DailyTimer timer2(15, 30,  17, 0, EVERY_DAY);            // 15:30 to 17:00
-DailyTimer timer3(18, 0,  21, 0, EVERY_DAY);        // 18:00 to 21:00
+DailyTimer timer1(5, 0,  7, 0, EVERY_DAY);                                            // 06:00 to 08:00 optional callback function for random number generation, see below example
+DailyTimer timer2(14, 30,  16, 0, EVERY_DAY);            // 15:30 to 17:00
+DailyTimer timer3(17, 0,  20, 0, EVERY_DAY);        // 18:00 to 21:00
 //DailyTimer timer2(12,  0, 13,  0, SATURDAY, FIXED);                                 // default is FIXED, this will randomize the start time only
 //DailyTimer timer3( 8, 30, 8, 31, WEEKENDS);                                         // creates with a default fixed start time and end time
 bool timer1_LastState = false;
@@ -101,21 +101,21 @@ void setup()
     delay(200);
     
     Blynk.virtualWrite(V5, 0);    //LED: TIMED HEATING ON
-    delay(500);
+    delay(200);
     Blynk.virtualWrite(V3, 0);    //LED: heating is on constant
-    delay(500);
+    delay(200);
     Blynk.virtualWrite(V4, 0);    //LED: heating is off
-    delay(500);
+    delay(200);
     Blynk.virtualWrite(V6, 0);    //LED: 1 HOUR of heat requested
-    delay(500);
+    delay(200);
     Blynk.virtualWrite(V9, 0);    //LED: Warmer
-    delay(500);
+    delay(200);
     Blynk.virtualWrite(V7, 0);    //LED: heating is in warmish mode
-    delay(500);
+    delay(200);
     Blynk.virtualWrite(V12, 0);   //LED: heating is OFF DUE TO THERMOSTAT
-    delay(500);
+    delay(200);
     Blynk.virtualWrite(V11, 0);   //LED: COLD
-    delay(500);
+    delay(200);
     //END ON SEQUENCE
     
     
@@ -123,12 +123,12 @@ void setup()
   //pinMode(D1,OUTPUT);
   pulseOn = 0;
   Particle.subscribe("Heatingwey", myHandler); 
-  //Particle.subscribe("yqwegbbbHG", myHandler2);//, "250024000d47353136383631"
   lcd.clear();
   lcd.print(0, 0, "Hello World! ");
   lcd.print(0, 1, "Run bert57.ino...");
   delay(3000);
   lcd.clear();
+
 }
 
 void  loop(){  
@@ -329,9 +329,10 @@ void  loop(){
 
 // constant heat on
 BLYNK_WRITE(V1) {
-    if (param.asInt() == 1 && (heatOff == 0) && (heatVariable == 0) && (oneHour == 3))
+    if ((param.asInt() == 1) && (heatOff == 0) && (heatVariable == 0))
     {  
     constantOn = 1;
+    //oneHour = 0;
     Blynk.virtualWrite(V11, 900);   //LED: Cold
     Blynk.virtualWrite(V12, 0);     //LED: heating is OFF DUE TO THERMOSTAT
     Blynk.virtualWrite(V7, 0);      //LED: Warmish
@@ -392,7 +393,7 @@ BLYNK_WRITE(V16) {
 
 BLYNK_WRITE(V15) {
   tSlide1 = (1000 * param.asInt());
-  lcd.print(0, 1, (tSlide1/1000)/60);
+  lcd.print(4, 0, (tSlide1/1000)/60);
   delay(1000);
   lcd.clear();
   //Particle.publish("yqwegbbbHG", String(tSlide1), 60, PRIVATE);
@@ -400,14 +401,14 @@ BLYNK_WRITE(V15) {
 
 BLYNK_WRITE(V13) {                  // pump on
   pumpPumpAdd = (1000 * param.asInt());
-  lcd.print(0, 1, (pumpPumpAdd/1000)/60);
+  lcd.print(4, 0, (pumpPumpAdd/1000)/60);
   delay(1000);
   lcd.clear();
 }
 
 BLYNK_WRITE(V14) {                  // pump off
   pumpDelayAdd = (1000 * param.asInt());
-  lcd.print(0, 1, (pumpDelayAdd/1000)/60);
+  lcd.print(4, 0, (pumpDelayAdd/1000)/60);
   delay(1000);
   lcd.clear();
 }
@@ -431,7 +432,7 @@ void myHandler(const char *event, const char *data)
   chars just don't play that way. Instead we're going to strcmp(), which compares two chars.
   If they are the same, strcmp will return 0.
   */
-
+/*
    if (strcmp(data,"23")==0)    //It's warm, turn the heating off                       23C
   {
     shot = 1; //1
@@ -439,7 +440,7 @@ void myHandler(const char *event, const char *data)
     Blynk.virtualWrite(V7, 0);          //LED: Warmish
     Blynk.virtualWrite(V11, 0);       //LED: Cold
     Blynk.virtualWrite(V9, 0);        //LED: Warmer
-    lcd.print(0, 0, "23C");
+    //lcd.print(0, 0, "23ºC");
     //delay(1000);
     //lcd.clear();
   } 
@@ -451,7 +452,7 @@ void myHandler(const char *event, const char *data)
     Blynk.virtualWrite(V7, 0);          //LED: Warmish
     Blynk.virtualWrite(V11, 0);       //LED: Cold
     Blynk.virtualWrite(V9, 0);        //LED: Warmer
-    lcd.print(0, 0, "22C");
+    //lcd.print(0, 0, "22ºC");
     //delay(1000);
     //lcd.clear();
   } 
@@ -463,23 +464,23 @@ void myHandler(const char *event, const char *data)
     Blynk.virtualWrite(V7, 0);          //LED: Warmish
     Blynk.virtualWrite(V11, 0);       //LED: Cold
     Blynk.virtualWrite(V9, 0);        //LED: Warmer
-    lcd.print(0, 0, "21C");
+    //lcd.print(0, 0, "21ºC");
     //delay(1000);
     //lcd.clear();
   } 
    else 
-   if (strcmp(data,"20")==0)    //It's warm, turn the heating off                       20C
+   if (strcmp(data,"twenty")==0)    //It's warm, turn the heating off                       20C
   {
     shot = 1; //1
     Blynk.virtualWrite(V12, 800);       //LED: heating is OFF DUE TO THERMOSTAT
     Blynk.virtualWrite(V7, 0);          //LED: Warmish
     Blynk.virtualWrite(V11, 0);       //LED: Cold
     Blynk.virtualWrite(V9, 0);        //LED: Warmer
-    lcd.print(0, 0, "20C");
+    lcd.print(0, 0, "20ºC");
     //delay(1000);
     //lcd.clear();
   } 
-   else
+   else */
    if (strcmp(data,"itshot")==0)    //It's warm, turn the heating off                       19C and above
   {
     shot = 1; //1
@@ -487,7 +488,7 @@ void myHandler(const char *event, const char *data)
     Blynk.virtualWrite(V7, 0);          //LED: Warmish
     Blynk.virtualWrite(V11, 0);       //LED: Cold
     Blynk.virtualWrite(V9, 0);        //LED: Warmer
-    lcd.print(0, 0, "19C");
+    lcd.print(0, 0, "19ºC or more");
     //delay(1000);
     //lcd.clear();
   } 
@@ -499,7 +500,7 @@ void myHandler(const char *event, const char *data)
     Blynk.virtualWrite(V12, 0);         //LED: heating is OFF DUE TO THERMOSTAT
     Blynk.virtualWrite(V11, 0);       //LED: Cold
     Blynk.virtualWrite(V9, 0);        //LED: Warmer
-    lcd.print(0, 0, "18.5C");
+    lcd.print(0, 0, "18.5ºC");
     //delay(1000);
     //lcd.clear();
   }
@@ -511,7 +512,7 @@ void myHandler(const char *event, const char *data)
     Blynk.virtualWrite(V7, 0);        //LED: Warmish
     Blynk.virtualWrite(V12, 0);         //LED: heating is OFF DUE TO THERMOSTAT
     Blynk.virtualWrite(V11, 0);       //LED: Cold
-    lcd.print(0, 0, "18C");
+    lcd.print(0, 0, "18ºC");
     //delay(1000);
     //lcd.clear();
   }
@@ -523,19 +524,19 @@ void myHandler(const char *event, const char *data)
     Blynk.virtualWrite(V7, 0);          //LED: Warmish
     Blynk.virtualWrite(V11, 900);       //LED: Cold
     Blynk.virtualWrite(V9, 0);        //LED: Warmer
-    lcd.print(0, 0, "17C");
+    lcd.print(0, 0, "17ºC or less");
     //delay(1000);
     //lcd.clear();
-  }
+  }/*
   else 
-  if (strcmp(data,"16")==0)        //It's cold
+  if (strcmp(data,"sixteen")==0)        //It's cold
   {
     shot = 0;                       //0                                                     16C
     Blynk.virtualWrite(V12, 0);         //LED: heating is OFF DUE TO THERMOSTAT
     Blynk.virtualWrite(V7, 0);          //LED: Warmish
     Blynk.virtualWrite(V11, 900);       //LED: Cold
     Blynk.virtualWrite(V9, 0);        //LED: Warmer
-    lcd.print(0, 0, "16C");
+    lcd.print(0, 0, "16ºC");
     //delay(1000);
     //lcd.clear();
   }
@@ -547,7 +548,7 @@ void myHandler(const char *event, const char *data)
     Blynk.virtualWrite(V7, 0);          //LED: Warmish
     Blynk.virtualWrite(V11, 900);       //LED: Cold
     Blynk.virtualWrite(V9, 0);        //LED: Warmer
-    lcd.print(0, 0, "15C");
+    //lcd.print(0, 0, "15ºC");
     //delay(1000);
     //lcd.clear();
   }
@@ -559,7 +560,7 @@ void myHandler(const char *event, const char *data)
     Blynk.virtualWrite(V7, 0);          //LED: Warmish
     Blynk.virtualWrite(V11, 900);       //LED: Cold
     Blynk.virtualWrite(V9, 0);        //LED: Warmer
-    lcd.print(0, 0, "14C");
+    //lcd.print(0, 0, "14ºC");
     //delay(1000);
     //lcd.clear();
   }
@@ -571,7 +572,7 @@ void myHandler(const char *event, const char *data)
     Blynk.virtualWrite(V7, 0);          //LED: Warmish
     Blynk.virtualWrite(V11, 900);       //LED: Cold
     Blynk.virtualWrite(V9, 0);        //LED: Warmer
-    lcd.print(0, 0, "13C");
+    //lcd.print(0, 0, "13ºC");
     //delay(1000);
     //lcd.clear();
   }
@@ -583,7 +584,7 @@ void myHandler(const char *event, const char *data)
     Blynk.virtualWrite(V7, 0);          //LED: Warmish
     Blynk.virtualWrite(V11, 900);       //LED: Cold
     Blynk.virtualWrite(V9, 0);        //LED: Warmer
-    lcd.print(0, 0, "12C");
+    //lcd.print(0, 0, "12ºC");
     //delay(1000);
     //lcd.clear();
   }
@@ -595,10 +596,10 @@ void myHandler(const char *event, const char *data)
     Blynk.virtualWrite(V7, 0);          //LED: Warmish
     Blynk.virtualWrite(V11, 900);       //LED: Cold
     Blynk.virtualWrite(V9, 0);        //LED: Warmer
-    lcd.print(0, 0, "11C");
+    //lcd.print(0, 0, "11ºC");
     //delay(1000);
     //lcd.clear();
-  }
+  }*/
    
 
 }
