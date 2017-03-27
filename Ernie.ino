@@ -22,7 +22,7 @@
 // MPL3115A2 I2C address is 0x60(96)
 #define Addr 0x60
 
-#define TOKEN "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  // Put here your Ubidots TOKEN
+#define TOKEN "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  // Put here your Ubidots TOKEN
 
 
 
@@ -113,7 +113,7 @@ void loop()
     fTemp = cTemp * 1.8 + 32;
     
     
-    if (temp > 368) {                                                          // >23C
+    /*if (temp > 368) {                                                          // >23C
         Particle.publish("Heatingwey", "23");
     }
     else
@@ -125,11 +125,11 @@ void loop()
         Particle.publish("Heatingwey", "21");
     }
     else
-    if ((temp > 320) && (temp <= 336)) {                                       // 20C
-        Particle.publish("Heatingwey", "20");
+    if (temp > 320) && (temp <= 336)) {                                       // 20C
+        Particle.publish("Heatingwey", "twenty");
     }
-    else
-    if ((temp > 304) && (temp <= 320)) {                                       // 19C
+    else*/
+    if (temp > 304) {                                                         // 19C
         Particle.publish("Heatingwey", "itshot");
     }
     else
@@ -137,16 +137,16 @@ void loop()
         Particle.publish("Heatingwey", "pulse2");
     }
     else
-    if ((temp >= 288) && (temp <= 296)) {                                      // >=18C <= 18.5C
+    if ((temp > 288) && (temp <= 296)) {                                      // >=18C <= 18.5C
         Particle.publish("Heatingwey", "pulse1");
     }
     else
-    if ((temp > 272) && (temp <= 288)) {                                       // <17C
+    if (temp <= 288) {                                       // <17C ((temp > 272) && (temp <= 288))
         Particle.publish("Heatingwey", "itscold");
-    }
+    }/*
     else
     if ((temp > 256) && (temp <= 272)) {                                       // 16C
-        Particle.publish("Heatingwey", "16");
+        Particle.publish("Heatingwey", "sixteen");
     }
     else
     if ((temp > 240) && (temp <= 256)) {                                       // 15C
@@ -167,7 +167,7 @@ void loop()
     else
     if ((temp > 176) && (temp <= 192)) {                                       // 11C
         Particle.publish("Heatingwey", "11");
-    }
+    }*/
     
 
     // Start I2C transmission
@@ -207,16 +207,15 @@ void loop()
     // Output data to dashboard
     
     Particle.publish("pressure", String(pressure));
-    Particle.publish("cTemp", String(cTemp));
-    
-    ubidots.add("Atmo pressure", pressure); 
     delay(10000);
-    
+    Particle.publish("cTemp", String(cTemp));
+    delay(10000);
+    ubidots.add("Atmo pressure", pressure); 
     ubidots.add("hall way analog", cTemp); 
     ubidots.sendAll();
     
     
-    delay(48000);
+    delay(38000);
 }
 
 
